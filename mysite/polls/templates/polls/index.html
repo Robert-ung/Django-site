@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./../../static/css/style.css">
+    <title>Liste des Pokémon</title>
+</head>
+<body>
+    <h1>Pokédex : Liste des Pokémon</h1>
+    <div class="menu">
+        <a href="{% url 'index' %}" class="button">Pokédex</a>
+        <a href="{% url 'favorite_list' %}" class="button">Favoris⭐</a>
+    </div>
+    <ul>
+        {% for pokemon in pok %}
+            <li>
+                <img src="{{ pokemon.photo.url }}" alt="{{ pokemon.nom }}" width="120" height="130">
+                <h2>{{ pokemon.nom }}</h2>
+                <a href="{% url 'detail' pokemon.id %}" class="button">Détails</a>
+                <a href="{% url 'add_favorite' pokemon.id %}" class="button">Ajouter aux favoris</a>
+            </li>
+        {% empty %}
+            <li>Aucun Pokémon disponible.</li>
+        {% endfor %}
+    </ul>
+    <div class="footer">
+        <p>Développé par Robert UNG</p>
+    </div>
+</body>
+</html>

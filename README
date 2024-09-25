@@ -1,0 +1,90 @@
+Accéder aux URLS
+
+La route racine du site public sera accessible via : http://127.0.0.1:8000/
+
+La route pour accéder aux pokémons (application publique) sera accessible via : http://127.0.0.1:8000/pokemons/
+
+La route pour accéder aux pokémons favoris sera accessible via : http://127.0.0.1:8000/pokemons/favorites/
+
+La route pour accéder à l'API des pokémons sera accessible via : http://127.0.0.1:8001/api/pokemons/  
+
+La route pour accéder au site admin de Django sera accesible via : http://127.0.0.1:8001/admin/
+
+Questions
+
+Fonctionnement de Django
+
+1) Vous disposez d'un projet Django dans lequel une application public a été créée. Décrivez la suite de requêtes et d'exécutions permettant l'affichage d'une page HTML index.html à l'URL global / via une application public, ne nécessitant pas de contexte de données. Vous décrirez la position exacte dans l'arborescence des répertoires des différents fichiers utiles à cette exécution.
+
+On doit d'abord créé une vue views.py de l'application public qui renverra le fichier index.html. Ensuite, on doit configurer les URL pour cette vue. Dans le fichier urls.py de l'application public, il faut inclure l'URL qui pointe vers cette vue. Enfin, on crée le fichier index.html qui doit être placé dans le répertoire des templates.
+
+myproject/
+├── public/
+│   ├── templates/
+│   │   └── public/
+│   │       └── index.html
+│   ├── views.py
+│   └── urls.py
+├── myproject/
+│   └── settings.py
+└── manage.py
+
+2) Dans quelle(s) section(s) de quel(s) fichier(s) peut-on configurer la base de données que l'on souhaite utiliser pour un projet Django ?
+
+La configuration de la base de données dans un projet Django se fait dans le fichier settings.py, qui se trouve dans le répertoire principal du projet. Dans ce fichier, la section DATABASES est dédiée à la configuration de la base de données.
+
+3) Dans quel(s) fichier(s) peut-on configurer le fichier de paramètres que l'on souhaite faire utiliser par le projet Django ? Si plusieurs fichers sont à mentionner, expliquez le rôle de chaque fichier.
+
+Les paramètres du projet Django sont principalement configurés dans le fichier settings.py, situé dans le répertoire principal du projet.
+
+4) Nous nous plaçons à la racine de votre projet Django. Quel effet a l'exécution python manage.py makemigrations ? Et l'exécution python manage.py migrate ? Quel(s) fichier(s) sont mis en oeuvre pendant ces exécutions ?
+
+Lorsque j'éxecute la commande python manage.py makemigrations, cela a pour effet de détecter les modifications apportées à mes modèles (models.py) et de créer des fichiers de migration qui décrivent comment appliquer ces changements à la base de données. Ces fichiers de migration sont stockés dans un répertoire migrations à l'intérieur de chaque application. La commande python manage.py migrate applique ces fichiers de migration à la base de données, en créant les tables et les relations nécessaires selon les modèles que j'ai défini. Cela met à jour la base de données pour qu'elle soit conforme à mes modèles Django. En résumé, makemigrations crée des fichiers de migration basés sur les modèles, et migrate applique ces fichiers pour mettre à jour la base de données.
+
+Fonctionnement de Docker
+
+1) Expliquez l'effet et la syntaxe de ces commandes, communément vues dans des fichiers Dockerfile : FROM, RUN, WORKDIR, EXPOSE, CMD.
+
+La commande FROM spécifie l'image de base à partir de laquelle le conteneur sera construit. 
+La commande RUN exécute des commandes dans l'image lors de sa construction.
+La commande WORKDIR définit le répertoire de travail pour les instructions suivantes dans le Dockerfile.
+La commande EXPOSE indique à Docker que le conteneur écoute sur les ports spécifiés au moment de l'exécution.
+La commande CMD spécifie la commande par défaut qui sera exécutée lorsque le conteneur sera lancé.
+
+2) Dans la définition d'un service dans le fichier docker-compose.yml, expliquez l'effet des mentions :
+
+ports:
+    - "80:80"
+    
+Cette mention dans le fichier docker-compose.yml mappe le port 80 du conteneur au port 80 de l’hôte. Cela signifie que toute requête envoyée à l’hôte sur le port 80 sera redirigée vers le port 80 du conteneur, permettant d'accéder à l'application en cours d'exécution dans le conteneur via http://localhost.
+
+build: 
+    context: .
+    dockerfile: Dockerfile.api
+    
+context spécifie le répertoire dans lequel Docker doit chercher le Dockerfile et les fichiers nécessaires pour construire l'image. Ici, . signifie le répertoire courant.
+Et dockerfile indique le nom du Dockerfile à utiliser pour la construction de l'image. Cela permet de spécifier un Dockerfile différent de celui par défaut (Dockerfile).   
+
+depends_on:
+    - web
+    - api
+    
+Cette mention définit des dépendances entre les services. Ici, le service en cours de définition dépend des services web et api, ce qui signifie que Docker Compose s'assurera que ces services sont démarrés avant de démarrer le service courant.
+
+environment:
+    POSTGRES_DB: ${POSTGRES_DB}
+    POSTGRES_USER: ${POSTGRES_USER}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+Cette section définit des variables d'environnement à passer au conteneur. Les valeurs peuvent être extraites d'un fichier .env ou spécifiées directement. Ces variables peuvent être utilisées par l'application à l'intérieur du conteneur.
+
+3) Citez une méthode pour définir des variables d'environnement dans un conteneur.
+
+Nous pouvons utiliser la section environment dans le fichier docker-compose.yml pour définir des variables d'environnement.
+
+4) Dans un même réseau Docker, nous disposons d'un conteneur nginx (utilisant l'image nginx:latest) et d'un conteneur web (utilisant une image contenant un projet web Django, ayant la commande python manage.py runserver 0.0.0.0:8000 de lancée au démarrage du conteneur). Comment adresser le serveur web tournant dans le conteneur web depuis le conteneur nginx, sans utiliser les adresses IP des conteneurs ?
+
+Nous pouvons utiliser le nom de service défini dans le docker-compose.yml. Par exemple, si le conteneur web est nommé web, le conteneur nginx peut adresser le serveur web via http://web:8000.
+
+
+PS : J'ai utilisé Chatgpt pour tout le code html et CSS. Pour le reste, j'ai essayé de coder par moi-même en utilisant chatgpt quand j'ai des erreurs ;)

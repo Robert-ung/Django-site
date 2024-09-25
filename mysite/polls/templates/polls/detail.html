@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="'./../../../static/css/style.css">
+    <title>Détail du Pokémon</title>
+</head>
+<body>
+    <h1>Détails de {{ pokemon.nom }}</h1>
+    <div class="menu">
+        <a href="{% url 'index' %}" class="button">Pokédex</a>
+        <a href="{% url 'favorite_list' %}" class="button">Favoris⭐</a>
+    </div>
+    <div class="pokemon-details">
+        <img src="{{ pokemon.photo.url }}" alt="{{ pokemon.nom }}" width="200" height="220">
+        <h2>{{ pokemon.nom }}</h2>
+        <p>Type : {{ pokemon.type }}</p>
+        <p>Génération : {{ pokemon.generation }}</p>
+        <p>Couleur : {{ pokemon.couleur }}</p>
+        <p>Poids : {{ pokemon.poids }} kg</p>
+        <p>Hauteur : {{ pokemon.hauteur }} m</p>
+        <a href="{% url 'index' %}" class="button">Retour à la liste</a>
+    </div>
+</body>
+</html>
